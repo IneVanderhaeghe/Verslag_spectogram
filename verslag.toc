@@ -1,12 +1,15 @@
 \babel@toc {dutch}{}
 \contentsline {section}{\numberline {1}Probleemstelling: een audiospectrogram}{3}{section.1}%
 \contentsline {subsection}{\numberline {1.1}Wat is een spectrogram?}{3}{subsection.1.1}%
-\contentsline {section}{\numberline {2}Oplossingsstructuur}{3}{section.2}%
-\contentsline {subsection}{\numberline {2.1}Audio binnentrekken}{3}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Fourier nemen}{3}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}Grafisch weergeven}{3}{subsection.2.3}%
-\contentsline {section}{\numberline {3}Implementatie}{3}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Audio binnentrekken}{3}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Fourier nemen}{3}{subsection.3.2}%
-\contentsline {subsection}{\numberline {3.3}Grafisch weergeven}{3}{subsection.3.3}%
-\contentsline {section}{\numberline {4}Besluit}{3}{section.4}%
+\contentsline {subsection}{\numberline {1.2}Hoe wordt een spectrogram voorgesteld?}{3}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Gebruikte methoden om een spectrogram te implementeren}{4}{subsection.1.3}%
+\contentsline {subsection}{\numberline {1.4}Afwerkingsgraad}{4}{subsection.1.4}%
+\contentsline {section}{\numberline {2}Oplossingsstructuur}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Audio binnentrekken}{4}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Fourier nemen}{4}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Grafisch weergeven}{4}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Implementatie}{4}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Audio binnentrekken}{4}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Fourier nemen}{4}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Grafisch weergeven}{4}{subsection.3.3}%
+\contentsline {section}{\numberline {4}Besluit}{4}{section.4}%

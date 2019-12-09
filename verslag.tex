@@ -2,6 +2,7 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[dutch]{babel}
+\usepackage{float}
 
 \date{Academiejaar 2019 -- 2020}
 \address{
@@ -36,7 +37,48 @@ Doorheen het semester hebben we ons met ons groepje bezig gehouden met het bouwe
 
 \subsection{Wat is een spectrogram?}
 
-Een spectrogram kan goed samengevat worden volgens de volgende definitie: het is een visuele represenatie van de energie in elke frequentie uitgezet in de tijd. In de audiowereld worden deze frequenties vaak de \textit{pitch} genoemd van het signaal. % Robin: ik schrijf hier straks nog wat verder aan :)
+Het kan handig zijn om snel de frequentieinhoud van een signaal te zien, naar analyse toe. Gezien een signaal ook vaak veranderlijk is in de tijd, kan ook de frequentieinhoud veranderen in functie van de tijd. Er bestaat een methode om de frequentieinhoud van een signaal weer te geven in functie van de tijd. Dit heet een \textit{Spectrogram}. Een spectrogram kan goed samengevat worden volgens de volgende definitie: het is een visuele representatie van de energie in elke frequentie uitgezet in de tijd. Een spectrogram heeft verschillende toepassingen. Enkele voorbeelden hiervan is bv. in de audio, of in de analyse van licht. Dit project focust specifiek op het analyseren van audiosignalen, hoorbaar voor het menselijk oor. Hiervoor nemen we standaard een range van $20Hz$ tot $20kHz$. In de audiowereld worden deze frequenties vaak de \textit{pitch} genoemd van het signaal. 
+
+
+Mogelijke toepassingen van een spectrogram die hoorbare audiosignalen worden hieronder opgesomt:
+\begin{itemize}
+	\item analyse van Muziek(-instrumenten)
+	\item analyse van Spraak
+	\item analyse van Dierengeluiden
+	\item analyse van RF modulatietechnieken
+\end{itemize}
+
+\subsection{Hoe wordt een spectrogram voorgesteld?}
+
+De grafische voorstelling van een spectrogram zou eigenlijk in 3 dimensies moeten gegeven worden. Dit is echter wat lastig om dan op één oogopslag informatie te kunnen uit aflezen. Daarom worden in de literatuur vaak de volgende afspraken gevolgd:
+\begin{itemize}
+	\item De tijd wordt op de horizontale as uitgezet;
+	\item De frequentie wordt op de verticale as uitgezet;
+	\item De sterkte van de frequentie wordt vaak weergegeven met behulp van kleurintensiteit of een kleurgradiënt.
+\end{itemize}
+In figuur \ref{fig:typischegrafischevoorstellingspectrogram} is een typische grafische voorstelling gegeven.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{typischeGrafischeVoorstellingSpectrogram.png}
+	\caption{Een typische grafische voorstelling van een spectrogram}
+	\label{fig:typischegrafischevoorstellingspectrogram}
+\end{figure}
+
+\subsection{Gebruikte methoden om een spectrogram te implementeren}
+
+In de literatuur kunnen 2 veelgebruikte methoden voor de implementatie van een Spectrogram gevonden worden.
+\begin{enumerate}
+	\item Met behulp van de FFT: van het ingenomen signaal wordt de \textit{Fast Fourier Transform (FFT)} genomen, wat een versnelde versie is van de \textit{Discrete Fourier Transform (DFT)}. Dit toont de frequentieinhoud van het signaal. Een belangrijke eigenschap van deze transformatie is dat ze een discrete ingang (de audio) en een discrete uitgang (de frequentieinhoud van dit signaal) heeft. 
+	\item Met behulp van een filterbank: hier wordt een reeks banddoorlaatfilters geïmplementeerd, die allemaal op hetzelfde signaal werken. Door na iedere filter dan te gaan kijken wat de energie van het signaal is, kan dit als een maat gebruikt worden voor de frequentieinhoud van ons ingangssignaal.
+\end{enumerate}
+
+Naar implementatie toe heeft men dan een keuze, dit hangt af welke resolutie men wilt in de frequentie. Wil men een grote resolutie in de frequentie, gaat men eerder kiezen voor de aanpak met de FFT. Als men met een lage frequentieresolutie zich tevreden kan nemen, wordt er vaak geopteerd voor de implementatie met die meerdere filters.\\
+Wij hebben hier gekozen voor de implementatie met een FFT, omdat deze een stuk flexibeler is in implementatie.
+
+
+\subsection{Afwerkingsgraad}
+
 
 \section{Oplossingsstructuur}
 %Algemeen overzicht.
