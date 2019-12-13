@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7000 64-bit) (preloaded format=pdflatex 2019.5.8)  13 DEC 2019 11:52
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7000 64-bit) (preloaded format=pdflatex 2019.5.8)  13 DEC 2019 13:56
 entering extended mode
 **./verslag.tex
 (verslag.tex
@@ -854,44 +854,74 @@ File: kuleuvenSedes.pdf Graphic file (type pdf)
 Package pdftex.def Info: kuleuvenSedes.pdf  used on input line 73.
 (pdftex.def)             Requested size: 25.00282pt x 42.67912pt.
  [3 <./typischeGrafischeVoorstellingSpectrogram.png (PNG copy)>]
-Underfull \hbox (badness 10000) in paragraph at lines 102--103
+Underfull \hbox (badness 10000) in paragraph at lines 83--84
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 104--105
+Underfull \hbox (badness 10000) in paragraph at lines 85--86
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 106--107
+Underfull \hbox (badness 10000) in paragraph at lines 87--88
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 89--90
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 91--94
 
  []
 
 File: kuleuvenSedes.pdf Graphic file (type pdf)
 <use kuleuvenSedes.pdf>
-Package pdftex.def Info: kuleuvenSedes.pdf  used on input line 109.
+Package pdftex.def Info: kuleuvenSedes.pdf  used on input line 105.
 (pdftex.def)             Requested size: 25.00282pt x 42.67912pt.
-[4] 
+[4]
+Underfull \hbox (badness 10000) in paragraph at lines 139--140
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 141--142
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 143--144
+
+ []
+
+
 AED: lastpage setting LastPage
 File: kuleuvenSedes.pdf Graphic file (type pdf)
 <use kuleuvenSedes.pdf>
-Package pdftex.def Info: kuleuvenSedes.pdf  used on input line 121.
+Package pdftex.def Info: kuleuvenSedes.pdf  used on input line 158.
 (pdftex.def)             Requested size: 25.00282pt x 42.67912pt.
 [5]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 121.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 121.
+File: kuleuvenSedes.pdf Graphic file (type pdf)
+<use kuleuvenSedes.pdf>
+Package pdftex.def Info: kuleuvenSedes.pdf  used on input line 158.
+(pdftex.def)             Requested size: 25.00282pt x 42.67912pt.
+ [6]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 158.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 158.
  (verslag.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 121.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 121.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 158.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 158.
 Package rerunfilecheck Info: File `verslag.out' has not changed.
 (rerunfilecheck)             Checksum: 2568B36A85DC2BD365E6BD9D4406016B;956.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 121.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 158.
  ) 
 Here is how much of TeX's memory you used:
- 18700 strings out of 492895
- 371730 string characters out of 3121868
- 434651 words of memory out of 3000000
+ 18701 strings out of 492895
+ 371736 string characters out of 3121868
+ 435651 words of memory out of 3000000
  22256 multiletter control sequences out of 15000+200000
  13085 words of font info for 30 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -911,9 +941,9 @@ iKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Gebruiker/AppData
 ebruiker/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.
 pfb><C:/Users/Gebruiker/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/am
 sfonts/cm/cmsy10.pfb>
-Output written on verslag.pdf (5 pages, 800235 bytes).
+Output written on verslag.pdf (6 pages, 806386 bytes).
 PDF statistics:
- 470 PDF objects out of 1000 (max. 8388607)
- 24 named destinations out of 1000 (max. 500000)
+ 485 PDF objects out of 1000 (max. 8388607)
+ 25 named destinations out of 1000 (max. 500000)
  236 words of extra memory for PDF output out of 10000 (max. 10000000)
 

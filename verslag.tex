@@ -80,6 +80,43 @@ Wij hebben hier gekozen voor de implementatie met een FFT, omdat deze een stuk f
 
 \subsection{Afwerkingsgraad}
 
+Onze opdracht bestaat er uit om zelf een real-time spectrogram te maken van een audiosignaal dat aangeboden wordt door een FPGA. Dit spectrogram moet gevisualiseerd worden op een extern scherm via VGA of HDMI. \\
+
+Als eerste moet er dus een analoog audiosignaal kunnen binnengelezen worden via de audiocodec chip. Deze zorgt zelf voor de digitalisatie van het signaal en geeft dit door aan de FPGA. Er moet dus communicatie mogelijk zijn tussen de codec chip en de FPGA.\\
+
+Daarna moet het spectrum bepaald kunnen worden. Er worden een aantal samples genomen op het gedigitaliseerde audiosignaal. Daarop wordt een FFT uitgevoerd. Hierbij kan gewerkt worden met aansluitende of overlappende blokken van de samples. Als met overlapping gewerkt wordt zou de resolutie fijner zijn, maar het zou ook complexer zijn. \\
+
+Ten laatste moet de verzamelde data na de FFT op een 2D map komen die het spectrogram voorsteld. Eens het volledige scherm gevuld is, moet de oudste meting verwijderd worden en schuift het spectrogram een tijdseenheid op via een FIFO. \\
+
+In het volledige systeem moet rekening gehouden worden met de timing en mogelijke asynchrone signalen. \\
+Er zal tijdens de evaluatie van het project met verschillende testsignalen gecontroleerd worden als het project juist ontworpen is. Voorbeelden van testsignalen zijn FM modulatie, frequentie sweep, blokholf, DTMF signalen, ... \\
+\\ Er zijn enkele minimum vereisten in dit project:
+\begin{itemize}
+	\item Er wordt gewerkt met een FPGA bord naar keuze (Zedboard, Zybo, PYNQ, ...)
+	\item Interface met audiocodec chip
+	\item Real-time FFT op audio input
+	\begin{itemize}
+		\item 1 kanaal (mono)
+		\item Aansluitende blokken van \textit{N} samples
+	\end{itemize}
+	\item Opstellen en updaten van spectrogram
+	\item VGA/HDMI interface logica
+	\item Beschikbaar stellen van spectrogram op een extern beeldscherm
+\end{itemize}
+Daarnaast zijn nog enkele mogelijkheden tot uitbreiding:
+\begin{itemize}
+	\item Stereo spectrogram
+	\item FFT op overlappende tijdssignalen
+	\item 3D spectrogram
+	\begin{itemize}
+		\item Amplitude als kleurintensiteit
+	\end{itemize}
+	\item Full HD
+	\item Audio loopback
+	\begin{itemize}
+		\item Signaal terug naar buiten via line-out of headphone
+	\end{itemize}
+\end{itemize}
 
 \section{Oplossingsstructuur}
 %Algemeen overzicht.
