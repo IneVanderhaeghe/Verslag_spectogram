@@ -3,6 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[dutch]{babel}
 \usepackage{float}
+\usepackage{subcaption}
 
 \date{Academiejaar 2019 -- 2020}
 \address{
@@ -84,7 +85,8 @@ Wij hebben hier gekozen voor de implementatie met een FFT, omdat deze een stuk f
 %Algemeen overzicht.
 
 \subsection{Audio binnentrekken}
-%INE
+
+Om de audio binnen te lezen, zijn er 2 belangrijke bestanden: \textit{adau1761} en \textit{audio\_if}. Deze bestanden lezen de data binnen en genereren daar de juiste clock signalen voor. In het top level wordt daar dan een audio loopback van gemaakt om de data die binnengelezen werd ook weer naar buiten te sturen. De data die binnengelezen werd wordt ook naar een FIFO gestuurd, zodat deze op de juiste momenten binnengelezen kan worden in de fft controller.
 
 \subsection{Fourier nemen}
 %SEBA
@@ -96,7 +98,14 @@ Wij hebben hier gekozen voor de implementatie met een FFT, omdat deze een stuk f
 %Algemeen overzicht
 
 \subsection{Audio binnentrekken}
-% INE
+
+Er kan gebruik gemaakt worden van de audiocodec die aanwezig is op het Zedboard. Dit is de \textit{adau1761}. Hiervoor moest een driver geschreven worden. Voor ons project hebben we een driver kunnen gebruiken die we gekregen hadden van Dhr. Verslype. Deze driver krijgt zowel serieel als parallelle data binnen. De samples van het linker en rechter kanaal zijn 24 bit breed. Deze worden verwerkt in de driver en er wordt een linker en rechter output gegenereerd die 24 bit breed zijn en een seriële data output. \newline
+
+Daarnaast moest een interface geschreven worden die de clock genereerd en de data die de driver binnenleest op een juiste manier door geeft naar het top level. Ook hier hebben we gebruik gemaakt van een interface die we gekregen hadden van Dhr. Verslype. Deze interface heeft een kloksignaal nodig van 100 MHz en 12,288 MHz. Deze genereren 3 nieuwe kloksignalen: de \textit{master clock}, de \textit{digital audio bit clock} en de \textit{digital audio left-right clock}. Deze worden gebruikt in de adau1761 codec. \newline
+
+De configuratie van de audio interface werkt met het $I^2C$ protocol, het doorgeven van audio data gebeurt via het $I^2S$ protocol.\newline
+
+In het top level wordt daarna een audio loopback gemaakt. De data wordt ook doorgegeven aan een FIFO memory, zodat deze uitgelezen kan worden door de fft controller. De data wordt serieel doorgegeven, eerst moet deze dus geparallelliseerd worden en per 24 bits opgeslagen worden in de memory. Het memory is 2048 waarden groot, dus wanneer deze vol is wordt een flag hoog gezet zodat de fft controller weet dat alle waarden die in de memory staan geldig zijn. 
 
 \subsection{Fourier nemen}
 % SEBA
@@ -105,7 +114,7 @@ Wij hebben hier gekozen voor de implementatie met een FFT, omdat deze een stuk f
 % ROBIN
 
 \section{Besluit}
-% Iemand die zich geroepen voelt?
+% INE
 
 Afsluitende tekst.
 
