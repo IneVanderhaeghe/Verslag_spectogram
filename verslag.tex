@@ -82,14 +82,12 @@ Wij hebben hier gekozen voor de implementatie met een FFT, omdat deze een stuk f
 
 Onze opdracht bestaat er uit om zelf een real-time spectrogram te maken van een audiosignaal dat aangeboden wordt door een FPGA. Dit spectrogram moet gevisualiseerd worden op een extern scherm via VGA of HDMI. \\
 
-Als eerste moet er dus een analoog audiosignaal kunnen binnengelezen worden via de audiocodec chip. Deze zorgt zelf voor de digitalisatie van het signaal en geeft dit door aan de FPGA. Er moet dus communicatie mogelijk zijn tussen de codec chip en de FPGA.\\
-
+Als eerste moet er dus een analoog audiosignaal kunnen binnengelezen worden via de audiocodec chip. Deze zorgt zelf voor de digitalisatie van het signaal en geeft dit door aan de FPGA. Er moet dus communicatie mogelijk zijn tussen de codec chip en de FPGA. \\
 Daarna moet het spectrum bepaald kunnen worden. Er worden een aantal samples genomen op het gedigitaliseerde audiosignaal. Daarop wordt een FFT uitgevoerd. Hierbij kan gewerkt worden met aansluitende of overlappende blokken van de samples. Als met overlapping gewerkt wordt zou de resolutie fijner zijn, maar het zou ook complexer zijn. \\
-
 Ten laatste moet de verzamelde data na de FFT op een 2D map komen die het spectrogram voorsteld. Eens het volledige scherm gevuld is, moet de oudste meting verwijderd worden en schuift het spectrogram een tijdseenheid op via een FIFO. \\
 
 In het volledige systeem moet rekening gehouden worden met de timing en mogelijke asynchrone signalen. \\
-Er zal tijdens de evaluatie van het project met verschillende testsignalen gecontroleerd worden als het project juist ontworpen is. Voorbeelden van testsignalen zijn FM modulatie, frequentie sweep, blokholf, DTMF signalen, ... \\
+Er zal tijdens de evaluatie van het project met verschillende testsignalen gecontroleerd worden als het project juist ontworpen is. Voorbeelden van testsignalen zijn FM modulatie, frequentie sweep, blokgolf, DTMF signalen, ... \\
 \\ Er zijn enkele minimum vereisten in dit project:
 \begin{itemize}
 	\item Er wordt gewerkt met een FPGA bord naar keuze (Zedboard, Zybo, PYNQ, ...)
@@ -119,9 +117,18 @@ Daarnaast zijn nog enkele mogelijkheden tot uitbreiding:
 \end{itemize}
 
 \section{Oplossingsstructuur}
-%Algemeen overzicht.
+Voor dergelijke probleemstelling is de eerste stap om een \textit{pipeline} op te stellen, een stappenplan van wat er met de data moet gebeuren van input tot aan output. Bij deze opdracht hebben we de pipeline toegepast gevonden in figuur \ref{toegepastePipeline}.
 
-\subsection{Audio binnentrekken}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{Pipeline.png}
+	\caption{toegepaste pipeline}
+	\label{fig:toegepastePipeline}
+\end{figure}
+
+%%nog wat uitleg over figuur.
+
+\subsection{Audio inlezen}
 
 Om de audio binnen te lezen, zijn er 2 belangrijke bestanden: \textit{adau1761} en \textit{audio\_if}. Deze bestanden lezen de data binnen en genereren daar de juiste clock signalen voor. In het top level wordt daar dan een audio loopback van gemaakt om de data die binnengelezen werd ook weer naar buiten te sturen. De data die binnengelezen werd wordt ook naar een FIFO gestuurd, zodat deze op de juiste momenten binnengelezen kan worden in de fft controller.
 
@@ -134,7 +141,7 @@ Om de audio binnen te lezen, zijn er 2 belangrijke bestanden: \textit{adau1761} 
 \section{Implementatie}
 %Algemeen overzicht
 
-\subsection{Audio binnentrekken}
+\subsection{Audio inlezen}
 
 Er kan gebruik gemaakt worden van de audiocodec die aanwezig is op het Zedboard. Dit is de \textit{adau1761}. Hiervoor moest een driver geschreven worden. Voor ons project hebben we een driver kunnen gebruiken die we gekregen hadden van Dhr. Verslype. Deze driver krijgt zowel serieel als parallelle data binnen. De samples van het linker en rechter kanaal zijn 24 bit breed. Deze worden verwerkt in de driver en er wordt een linker en rechter output gegenereerd die 24 bit breed zijn en een seriële data output. \newline
 
