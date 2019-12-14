@@ -6,10 +6,10 @@
 \contentsline {subsection}{\numberline {1.4}Afwerkingsgraad}{4}{subsection.1.4}%
 \contentsline {section}{\numberline {2}Oplossingsstructuur}{5}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Audio inlezen}{5}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Fourier nemen}{5}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}Grafisch weergeven}{5}{subsection.2.3}%
-\contentsline {section}{\numberline {3}Implementatie}{5}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Audio inlezen}{5}{subsection.3.1}%
+\contentsline {subsection}{\numberline {2.2}Fourier nemen}{6}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Grafisch weergeven}{6}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Implementatie}{6}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Audio inlezen}{6}{subsection.3.1}%
 \contentsline {subsection}{\numberline {3.2}Fourier nemen}{6}{subsection.3.2}%
 \contentsline {subsection}{\numberline {3.3}Grafisch weergeven}{6}{subsection.3.3}%
 \contentsline {section}{\numberline {4}Besluit}{6}{section.4}%

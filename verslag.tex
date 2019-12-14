@@ -117,7 +117,7 @@ Daarnaast zijn nog enkele mogelijkheden tot uitbreiding:
 \end{itemize}
 
 \section{Oplossingsstructuur}
-Voor dergelijke probleemstelling is de eerste stap om een \textit{pipeline} op te stellen, een stappenplan van wat er met de data moet gebeuren van input tot aan output. Bij deze opdracht hebben we de pipeline toegepast gevonden in figuur \ref{toegepastePipeline}.
+Voor dergelijke probleemstelling is de eerste stap om een \textit{pipeline} op te stellen, een stappenplan van wat er met de data moet gebeuren van input tot aan output. Bij deze opdracht hebben we de pipeline toegepast gevonden in figuur \ref{fig:toegepastePipeline}.
 
 \begin{figure}[H]
 	\centering
@@ -126,7 +126,13 @@ Voor dergelijke probleemstelling is de eerste stap om een \textit{pipeline} op t
 	\label{fig:toegepastePipeline}
 \end{figure}
 
-%%nog wat uitleg over figuur.
+Zoals te zien valt op de figuur is het werk grotendeels op te splitsen in 3 grote delen, namelijk aan de hand van het klokdomein. Er hoeft dan gewoon via een dual-port-RAM een overschakeling te worden gemaakt tussen deze verschillende klokdomeinen. We hebben het werk opgesplitst in de volgende delen:
+
+\begin{enumerate}
+	\item Audio inlezen. Kort samengevat is dit het inlezen van de audio via de audiocodec en stockeren in de FIFO.
+	\item Fourier nemen. Dit is de data uit de FIFO halen, er een window op toepassen en er daarna de fouriertransformatie op loslaten. De output van de FFT wordt dan doorgegeven aan Beeld.
+	\item Grafisch weergeven. Hier wordt de data gegeven van de FFT opgeslagen in een RAM, die dan ook wordt uitgelezen aan een andere kloksnelheid. Zo wordt de data visueel op het scherm gerepresenteerd.
+\end{enumerate}
 
 \subsection{Audio inlezen}
 
