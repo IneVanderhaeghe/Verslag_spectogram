@@ -142,10 +142,21 @@ Om de audio binnen te lezen, zijn er 2 belangrijke bestanden: \textit{adau1761} 
 %SEBA
 
 \subsection{Grafisch weergeven}
-% ROBIN
+Om de berekende resultaten dan ook grafisch weer te geven, hebben we gebruik gemaakt van VGA. Om dit wat beter beheersbaar te houden is de architectuur opgesplitst in \textit{VGA\_Driver} en \textit{mem\_interface\_Beeld}.\\
+\textit{VGA\_Driver} heeft als functie om Hsync en Vsync te genereren. Daarnaast genereert het ook een X en Y, wat de huidige positie is van de pixel die moet worden doorgestuurd, tesamen met een flag die hoog komt als men in het actieve gebied zit van het beeld (dus niet in de porch of syncpulses).\\
+\textit{mem\_interface\_Beeld} zorgt met de gegeven X en Y waarde dat de juiste pixel naar buiten komt. Ook zorgt het voor de overschakeling tussen de verschillende klokdomeinen.
 
 \section{Implementatie}
 %Algemeen overzicht
+
+%%NOG MEER UITLEG
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{HierarchieVivado.png}
+	\caption{Hierarchie van de implementatie}
+	\label{fig:hierarchieVivado}
+\end{figure}
 
 \subsection{Audio inlezen}
 
