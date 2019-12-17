@@ -135,12 +135,13 @@ Zoals te zien valt op de figuur is het werk grotendeels op te splitsen in 3 grot
 	\item Grafisch weergeven. Hier wordt de data gegeven van de FFT opgeslagen in een RAM, die dan ook wordt uitgelezen aan een andere kloksnelheid. Zo wordt de data visueel op het scherm gerepresenteerd.
 \end{enumerate}
 
-\subsection{Audio inlezen}
+\subsection{Audiocodec}
 
 Om de audio binnen te lezen, zijn er 2 belangrijke bestanden: \textit{adau1761} en \textit{audio\_if}. Deze bestanden lezen de data binnen en genereren daar de juiste clock signalen voor. In het top level wordt daar dan een audio loopback van gemaakt om de data die binnengelezen werd ook weer naar buiten te sturen. De data die binnengelezen werd wordt ook naar een FIFO gestuurd, zodat deze op de juiste momenten binnengelezen kan worden in de FFT controller.
 
-\subsection{Fourier nemen}
-%SEBA
+\subsection{Fourieranalyse}
+
+De FFT-controller bevat drie componenten, namelijk: een FFT ip, een window en een multiplier. In de FFT ip wordt de FFT van het signaal genomen. De window is een blok geheugen met daarin een Hanning window. De data die afkomstig is van een FIFO-geheugen wordt vermenigvuldigd met dit window. Deze vermenigvuldiging gebeurt in de multiplier ip.
 
 \subsection{Grafisch weergeven}
 Om de berekende resultaten dan ook grafisch weer te geven, hebben we gebruik gemaakt van VGA. Om dit wat beter beheersbaar te houden is de architectuur opgesplitst in \textit{VGA\_Driver} en \textit{mem\_interface\_Beeld}.\\
@@ -167,7 +168,7 @@ De audio interface maakt gebruik van een driver voor de \textit{adau1761} chip d
 
 Daarnaast is ook een memory interface. Deze maakt gebruikt van een FIFO die op 2 verschillende klokken werkt. Hier wordt de data doorgegeven tussen de audio interface en de FFT controller. De audio interface zal data in de FIFO schrijven volgens een klok die ze zelf genereerd, de FFT controller leest ze uit wanneer het geheugen vol is op een klok die sneller is dan die van de audio interface.
 
-\subsection{Audio inlezen}
+\subsection{Audiocodec}
 
 Er kan gebruik gemaakt worden van de audiocodec die aanwezig is op het Zedboard. Dit is de \textit{adau1761}. Hiervoor moest een driver geschreven worden. Voor ons project hebben we een driver kunnen gebruiken die we gekregen hadden van Dhr. Verslype. Deze driver krijgt zowel serieel als parallelle data binnen. De samples van het linker en rechter kanaal zijn 24 bit breed. Deze worden verwerkt in de driver en er wordt een linker en rechter output gegenereerd die 24 bit breed zijn en een seriële data output. \newline
 
@@ -177,8 +178,31 @@ De configuratie van de audio interface werkt met het $I^2C$ protocol, het doorge
 
 In het top level wordt daarna een audio loopback gemaakt. De data wordt ook doorgegeven aan een FIFO memory, zodat deze uitgelezen kan worden door de FFT controller. Het geheugen is 2048 waarden groot, dus wanneer deze vol is wordt een flag hoog gezet zodat de FFT controller weet dat alle waarden die in de memory staan geldig zijn. Het adres waarop de data geschreven moet worden in de FIFO wordt gegenereerd door middel van een counter tussen 0 en 2048. 
 
-\subsection{Fourier nemen}
-% SEBA
+\subsection{Fourieranalyse}
+
+De FFT wordt berekend met behulp van de “Fast Fourier Transform v9.1 LogiCORE IP”. De gesampelde waarden komen uit een geheugen met een FIFO-structuur. Deze samples worden nog vermenigvuldigd met een window alvorens ze gebruikt worden in de FFT. De window is opgeslagen in een gelijkaardig geheugen als de FIFO. Deze twee hebben dezelfde latency.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{FFT_controller.png}
+	\caption{FFT controller}
+	\label{fig:fft_controller}
+\end{figure}
+
+De FFT ip maakt gebruik van de “Radix-4 Burst I/O” architectuur. Hierbij moet een frame volledig naar buiten gebracht zijn voordat een nieuw frame verwerkt kan worden. Dit zorgt voor de noodzaak om te werken op een hogere frequentie dan de sample frequentie van de ingang. Dit zorgt voor de noodzaak van een buffer tussen de audio interface en de FFT ip. Dit wordt opgelost met het FIFO-geheugen.
+
+Tijdens het berekenen van de FFT van het signaal moet de data soms geschaald worden. Dit gebeurt met een block exponent. Hierbij wordt de data zodanig geschaald dat de uitgang een full scale heeft. Deze oplossing zorgt ervoor dat de besturing van de FFT gemakkelijker wordt.\\
+
+De uitgang bestaat uit 7 bits, terwijl de ingang 24 bits breed is. De ingang heeft deze breedte omdat de audio codec deze breedte gebruikt. Normaal is de breedte van een FFT even breed als de ingang. Maar gezien de frames uit de FFT moeten opgeslagen worden in een blok geheugen was er de noodzaak om de resolutie te verlagen naar 7 bits. De uitgang wordt gehaald uit het reëel deel van de uitgang. De uitgang van het reëel deel van de FFT ip is 24 bits breed, daarvan worden de bovenste 4 bits en de onderste 13 bits genegeerd. De bovenste 4 bits worden niet bekeken omdat gebleken is dat deze toch telkens nul zijn.
+
+De block exponent zorgt ervoor dat de uitgang altijd full scale is. Wanneer er enkel ruis in het data signaal aanwezig is, zou dit ook full scale uit de uitgang komen.  In de uitgang resideert de ruis echter nog steeds enkel in de minst significante bits. Gezien de minst significante bits niet bekeken worden is het scherm zo goed als perfect zwart wanneer er enkel ruis aanwezig is aan de ingang.
+Het reëel deel van een spectrum zal altijd symmetrisch zijn. Het volstaat dus enkel de helft van het spectrum weer te geven. Dit is ook wat hier gedaan wordt. Enkel de eerste helft van het reëel deel wordt doorgegeven aan het beeldverwerking gedeelte, zo wordt enkel dit deel geplot.\\
+
+Wanneer het geheugen bijna vol is maakt de audio interface een signaal FIFO-full hoog. Dit geeft aan dat het geheugen bijna vol is. Dit signaal wordt gesampled in de FFT-controller. Nadat gemerkt wordt dat dit signaal hoog is begint het proces FFT-counter. Hierin wordt er geteld van 0 tot 2047, dit is de grootte van een frame. Deze teller wordt gebruikt als geheugen adres voor de FIFO en het window. De data die uit deze twee blokken komt wordt vermenigvuldigd met elkaar. Zo wordt een ge-windowed signaal bekomen.\\
+
+Om spectral leakage te voorkomen wordt een window gebruikt. Het gekozen window is een Hanning window. Een Hanning window is een window die best gebruikt wordt wanneer er vooraf geen kennis is over het signaal. Dit is hier het geval gezien we alles uit het audio spectrum willen kunnen afbeelden.
+(Bron: National Instruments, „Understanding FFTs and Windowing,” [Online]. Available: http://download.ni.com/evaluation/pxi/Understanding%20FFTs%20and%20Windowing.pdf. [Geopend 17 Dec. 2019].)
+
 
 \subsection{Grafisch weergeven}
 % ROBIN
