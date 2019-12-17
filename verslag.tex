@@ -102,6 +102,7 @@ Er zal tijdens de evaluatie van het project met verschillende testsignalen gecon
 	\item VGA/HDMI interface logica
 	\item Beschikbaar stellen van spectrogram op een extern beeldscherm
 \end{itemize}
+\vspace{4mm}
 Daarnaast zijn nog enkele mogelijkheden tot uitbreiding:
 \begin{itemize}
 	\item Stereo spectrogram
@@ -158,7 +159,7 @@ Om de berekende resultaten dan ook grafisch weer te geven, hebben we gebruik gem
 	\label{fig:hierarchieVivado}
 \end{figure}
 
-Zoals te zien is op deze figuur is er een top laag die alle andere onderdelen met elkaar verbindt. Hier wordt een klok deler gemaakt, zodat elk onderdeel in zijn eigen klokdomein kan werken. \\
+Zoals te zien is op figuur \ref{fig:hierarchieVivado} is er een top laag die alle andere onderdelen met elkaar verbindt. Hier wordt een klok deler gemaakt, zodat elk onderdeel in zijn eigen klokdomein kan werken. \\
 
 Voor het beeld is een VGA driver nodig en een memory interface. Dit is een dual port ram, omdat de data die er in geschreven wordt niet op dezelfde klok werkt als de data die er uit gelezen wordt. \\
 
@@ -166,11 +167,23 @@ De FFT controller maakt gebruikt van 3 IP's: 1 om de FFT te berekenen, 1 die het
 
 De audio interface maakt gebruik van een driver voor de \textit{adau1761} chip die op de FPGA aanwezig is.\\
 
-Daarnaast is ook een memory interface. Deze maakt gebruikt van een FIFO die op 2 verschillende klokken werkt. Hier wordt de data doorgegeven tussen de audio interface en de FFT controller. De audio interface zal data in de FIFO schrijven volgens een klok die ze zelf genereerd, de FFT controller leest ze uit wanneer het geheugen vol is op een klok die sneller is dan die van de audio interface.
+Daarnaast is ook een memory interface. Deze maakt gebruikt van een FIFO die op 2 verschillende klokken werkt. Hier wordt de data doorgegeven tussen de audio interface en de FFT controller. De audio interface zal data in de FIFO schrijven volgens een klok die ze zelf genereerd, de FFT controller leest ze uit wanneer het geheugen vol is op een klok die sneller is dan die van de audio interface.\\
+
+Op figuur \ref{fig:klok_domeinen} is een overzicht gegeven van de verschillende klok domeinen. De data tussen de audio codec en de FFT wordt doorgegeven via een geheugen blok. Hierdoor is er een afscheiding tussen deze twee klok domeinen. Aan 48 kHz wordt het signaal FIFO-full gemaakt. Dit wordt gesampled door de FFT-controller met een klok van 5 MHz. Op deze manier zijn deze klok domeinen gescheiden. In het audio codec component worden nog een aantal andere klokken gebruikt dan de klok van 48 kHz.
+Tussen de FFT en de VGA worden de klokken ook afgescheiden door een geheugen blok.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{overzicht_klok_domeinen.png}
+	\caption{Overzicht klok domeinen}
+	\label{fig:klok_domeinen}
+\end{figure}
 
 \subsection{Audiocodec}
 
-Er kan gebruik gemaakt worden van de audiocodec die aanwezig is op het Zedboard. Dit is de \textit{adau1761}. Hiervoor moest een driver geschreven worden. Voor ons project hebben we een driver kunnen gebruiken die we gekregen hadden van Dhr. Verslype. Deze driver krijgt zowel serieel als parallelle data binnen. De samples van het linker en rechter kanaal zijn 24 bit breed. Deze worden verwerkt in de driver en er wordt een linker en rechter output gegenereerd die 24 bit breed zijn en een seriële data output. \newline
+Er kan gebruik gemaakt worden van de audiocodec die aanwezig is op het Zedboard. Dit is de \textit{adau1761}. Hiervoor moest een driver geschreven worden. Voor ons project hebben we een driver kunnen gebruiken die we gekregen hadden van Dhr. Verslype. Deze driver krijgt zowel serieel als parallelle data binnen. De samples van het linker en rechter kanaal zijn 24 bit breed. Deze worden verwerkt in de driver en er wordt een linker en rechter output gegenereerd die 24 bit breed zijn en een seriële data output.
+
+Deze driver gebruikt een clock van 12,288 MHz om een klok te genereren waarop de samples binnengelezen worden. Deze klok werkt op 48 kHz.  \newline
 
 Daarnaast moest een interface geschreven worden die de clock genereerd en de data die de driver binnenleest op een juiste manier door geeft naar het top level. Ook hier hebben we gebruik gemaakt van een interface die we gekregen hadden van Dhr. Verslype. Deze interface heeft een kloksignaal nodig van 100 MHz en 12,288 MHz. Deze genereren 3 nieuwe kloksignalen: de \textit{master clock}, de \textit{digital audio bit clock} en de \textit{digital audio left-right clock}. Deze worden gebruikt in de adau1761 codec. \newline
 
@@ -201,7 +214,7 @@ Het reëel deel van een spectrum zal altijd symmetrisch zijn. Het volstaat dus e
 Wanneer het geheugen bijna vol is maakt de audio interface een signaal FIFO-full hoog. Dit geeft aan dat het geheugen bijna vol is. Dit signaal wordt gesampled in de FFT-controller. Nadat gemerkt wordt dat dit signaal hoog is begint het proces FFT-counter. Hierin wordt er geteld van 0 tot 2047, dit is de grootte van een frame. Deze teller wordt gebruikt als geheugen adres voor de FIFO en het window. De data die uit deze twee blokken komt wordt vermenigvuldigd met elkaar. Zo wordt een ge-windowed signaal bekomen.\\
 
 Om spectral leakage te voorkomen wordt een window gebruikt. Het gekozen window is een Hanning window. Een Hanning window is een window die best gebruikt wordt wanneer er vooraf geen kennis is over het signaal. Dit is hier het geval gezien we alles uit het audio spectrum willen kunnen afbeelden.
-(Bron: National Instruments, „Understanding FFTs and Windowing,” [Online]. Available: http://download.ni.com/evaluation/pxi/Understanding%20FFTs%20and%20Windowing.pdf. [Geopend 17 Dec. 2019].)
+(Bron: National Instruments, „Understanding FFTs and Windowing,” [Online]. Available: http://download.ni.com/evaluation/pxi/Understanding\%20FFTs\%20and\%20Windowing.pdf. [Geopend 17 Dec. 2019].)
 
 
 \subsection{Grafisch weergeven}
