@@ -172,7 +172,70 @@ In het top level wordt daarna een audio loopback gemaakt. De data wordt ook door
 % SEBA
 
 \subsection{Grafisch weergeven}
-% ROBIN
+Om de berekende resultaten dan ook grafisch weer te geven, hebben we gebruik gemaakt van VGA. Om dit wat beter beheersbaar te houden is de architectuur opgesplitst in \textit{VGA\_Driver} en \textit{mem\_interface\_Beeld}.\\
+
+\textit{VGA\_Driver} genereert Hsync en Vsync. Dit werkt vrij eenvoudig door 2 tellertjes bij te houden (in de code \textit{Hteller} en \textit{Vteller}). Deze tellertjes geven weer waar op welke horizontale lijn men zit, alsook de positie in de lijn. Zo wordt het scherm horizontaal van links naar rechts doorlopen, en per lijn van boven naar beneden. Het is vrij eenvoudig om zo de Hsync en Vsync pulses te genereren, door enkel gewoon te gaan kijken wat de waarde is van de respectievelijke tellers.\\
+Extra uitgangen van dit blokje zijn VGA\_X en VGA\_Y, die de huidige positie is van de pixel die moet worden doorgestuurd. Erg eenvoudig, want hiervoor moeten we gewoon de tellertjes die Hsync en Vsync genereren naar buiten sturen. Ook wordt een flag gegenereert, die hoog komt als men in het actieve gebied zit van het beeld (dus niet in de porch of syncpulses).\\
+
+
+\textit{mem\_interface\_Beeld} zorgt voor de overschakeling tussen klokdomeinen en het beheer van de data bij uitlezen en schrijven. Hierin is de functionaliteit opgesplitst in 3 delen:
+\begin{itemize}
+	\item Memory component: voor de overschakeling tussen de klokdomeinen hebben we gebruik gemaakt van een dual port RAM, een stuk geheugen die langs 1 kant met een bepaalde klok geschreven wordt, en langs de andere kant wordt uitgelezen met een andere klok. Qua adressering loopt dit geheugen in dezelfde richting als de VGA: eerst van links naar rechts horizontaal, daarna lijntje per lijntje verticaal. Daardoor heeft de linkerbovenhoek dus het laagste adres, en de rechterbovenhoek het hoogste adres. Om dit adres wat te gaan abstraheren, hebben we dit opgesplitst in een $X$ en een $Y$. Het adres valt dan te berekenen via de volgende formule:
+	
+	$$ A = X + lijnbreedte \times Y $$
+	
+	met $X$ de horizontale pixelpositie, $Y$ de verticale pixelpositie en $A$ het adres.
+	
+	\item Writing to memory: De FFT heeft een uitgang van 2048 waarden. Gezien dit spectrum symmetrisch is, krijgt dit component slechts 1024 doorgestuurd. Een overzicht van wat ik door krijg vanuit de FFT:
+	\begin{itemize}
+		\item new\_entry\_clk: de klok waarmee de data uit de FFT komt
+		\item new\_entry: de data vanuit de FFT, serieel doorgegeven, laagste frequentie eerst
+		\item new\_entry\_valid: komt hoog als er data verstuurd wordt.
+		\item new\_entry\_counter: een teller die bijhoudt hoeveel data er al is doorgestuurd
+		\item new\_entry\_last: een vlag die hoog wordt als het laatste element over de datalijn komt
+	\end{itemize}
+	De randen (assen e.d.) worden op geïnitialiseerd in dit geheugen. Deze mogen uiteraard niet overschreven worden, waardoor er een beperking is waar er geschreven mag worden in het geheugen. De data wordt geschreven in een circulaire buffer. Deze circulaire buffer ligt in een bepaald gebied van het scherm, zodat de randen niet overschreven kunnen worden. Door middel van constantes wordt bijgehouden waar deze circulaire buffer begint en eindigt. \\
+	
+	Ieder "frame" dat we krijgen van de FFT is dus 1024 elementen groot. Deze zouden verticaal afgebeeld moeten worden. Spijtig genoeg is het aantal elementen een stuk hoger dan we behaald hebben in resolutie van het scherm, waardoor we wat hebben moeten "downsamplen": bv. een waarde houden, en een waarde wegsmijten.\\
+	
+	Het adres waarnaar geschreven moet worden is volgens de volgende formule bepaald:
+	$$Y_{schrijf} = \frac{pixelbreedte \times new\_entry\_counter }{1024} $$
+	vervolgens kan het adres berekend worden:
+	$$ A_{schrijf} = X_{schrijf} + lijnbreedte \times Y_{schrijf} $$
+	waar $X_{schrijf}$ de huidige positie is van de schrijfpositie in de circulaire buffer. Deze incrementeert na ieder frame, en wordt terug op de startpositie gezet als de eindpositie bereikt is.
+	
+	De data die doorgegeven wordt vanuit de FFT is 7 bits breed (range 0 - 127). De \textit{color space} (= de kleuren die kunnen bereikt worden) van ons project is maar range 0 - 75. Daardoor moeten deze datawaarden herschaald worden:
+	$$D_{schrijf} = \frac{D \times 75}{127}$$
+	
+	\item Reading from memory: om de inhoud van dit geheugen dan ook te visualiseren zijn ook een aantal trucs toegepast. Zolang we niet in het circulair-buffer-gedeelte van het scherm zitten, is dit vrij eenvoudig. Het adres de te lezen pixel is gewoon als volgt: 
+	$$ A_{lees} = X_{VGA} + lijnbreedte \times Y_{VGA} $$
+	Maar als we in het circulair-buffer-gedeelte zitten, moeten we de adressering een tikkeltje anders doen. We definieren dan een nieuwe variabele $X_{read}$. Dit is de "virtuele" $X$-positie waar we moeten lezen in onze circulaire buffer.
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{leesAdressering.png}
+	\caption{schematische representatie van de adressering}
+	\label{fig:leesAdressering}
+\end{figure}
+
+leesAdressering
+
+	Deze formules kunnen afgeleid worden uit de figuur \ref{fig:leesAdressering}
+	\\
+	
+	Als $X_{VGA} < X_{stop} - X_{schrijf} + X_{start}$ dan 
+	$$X_{read} = X_{VGA} + X_{schrijf} - X_{start}$$
+	anders
+	$$X_{read} = X_{VGA} + X_{schrijf} - X_{stop} - 2$$
+	
+	
+	Bemerk: omdat $X_{schrijf}$ kan veranderen terwijl 1 frame van het scherm wordt opgebouwd, hebben we enkel gekeken in het begin van het scherm, en dan een vaste waarde genomen voor $X_{schrijf}$ de rest van dit frame. Om nu het effectieve adres te berekenen waar gelezen moet worden in het circulair-buffer-gedeelte, gebruiken we de volgende formule:
+	$$ A_{lees} = X_{read} + lijnbreedte \times Y_{VGA} $$
+	
+	De data die uit dit geheugen komt is in de range 0-75 en representeert de kleur van een pixel. Om deze waarde dan effectief om te zetten naar een kleur, wordt dit getal dan via onze \textit{colorspace-vector} omgezet naar 4 bits per kleur (Rood, Groen en Blauw).
+
+\end{itemize}
 
 \section{Besluit}
 % INE
