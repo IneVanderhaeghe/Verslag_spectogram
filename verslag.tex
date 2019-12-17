@@ -136,7 +136,7 @@ Zoals te zien valt op de figuur is het werk grotendeels op te splitsen in 3 grot
 
 \subsection{Audio inlezen}
 
-Om de audio binnen te lezen, zijn er 2 belangrijke bestanden: \textit{adau1761} en \textit{audio\_if}. Deze bestanden lezen de data binnen en genereren daar de juiste clock signalen voor. In het top level wordt daar dan een audio loopback van gemaakt om de data die binnengelezen werd ook weer naar buiten te sturen. De data die binnengelezen werd wordt ook naar een FIFO gestuurd, zodat deze op de juiste momenten binnengelezen kan worden in de fft controller.
+Om de audio binnen te lezen, zijn er 2 belangrijke bestanden: \textit{adau1761} en \textit{audio\_if}. Deze bestanden lezen de data binnen en genereren daar de juiste clock signalen voor. In het top level wordt daar dan een audio loopback van gemaakt om de data die binnengelezen werd ook weer naar buiten te sturen. De data die binnengelezen werd wordt ook naar een FIFO gestuurd, zodat deze op de juiste momenten binnengelezen kan worden in de FFT controller.
 
 \subsection{Fourier nemen}
 %SEBA
@@ -149,14 +149,22 @@ Om de berekende resultaten dan ook grafisch weer te geven, hebben we gebruik gem
 \section{Implementatie}
 %Algemeen overzicht
 
-%%NOG MEER UITLEG
-
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{HierarchieVivado.png}
 	\caption{Hierarchie van de implementatie}
 	\label{fig:hierarchieVivado}
 \end{figure}
+
+Zoals te zien is op deze figuur is er een top laag die alle andere onderdelen met elkaar verbindt. Hier wordt een klok deler gemaakt, zodat elk onderdeel in zijn eigen klokdomein kan werken. \\
+
+Voor het beeld is een VGA driver nodig en een memory interface. Dit is een dual port ram, omdat de data die er in geschreven wordt niet op dezelfde klok werkt als de data die er uit gelezen wordt. Het schrijven gebeurt door de FFT controller, het lezen door de beeld interface. \\
+
+De FFT controller maakt gebruikt van 3 IP's: een om de FFT te berekenen, een die het window bevat die moet vermenigvuldigd worden met de waarden die uit de FFT komen en een die de andere 2 vermenigvuldigd met elkaar. \\
+
+De audio interface maakt gebruik van een driver voor de \textit{adau1761} chip die op de FPGA aanwezig is.\\
+
+Daarnaast is ook een memory interface. Deze maakt gebruikt van een FIFO die op 2 verschillende klokken werkt. Hier wordt de data doorgegeven tussen de audio interface en de FFT controller. De audio interface zal data in de FIFO schrijven volgens een klok die ze zelf genereerd, de FFT controller leest ze uit wanneer het geheugen vol is op een klok die sneller is dan die van de audio interface.
 
 \subsection{Audio inlezen}
 
@@ -166,7 +174,7 @@ Daarnaast moest een interface geschreven worden die de clock genereerd en de dat
 
 De configuratie van de audio interface werkt met het $I^2C$ protocol, het doorgeven van audio data gebeurt via het $I^2S$ protocol.\newline
 
-In het top level wordt daarna een audio loopback gemaakt. De data wordt ook doorgegeven aan een FIFO memory, zodat deze uitgelezen kan worden door de fft controller. De data wordt serieel doorgegeven, eerst moet deze dus geparallelliseerd worden en per 24 bits opgeslagen worden in de memory. Het memory is 2048 waarden groot, dus wanneer deze vol is wordt een flag hoog gezet zodat de fft controller weet dat alle waarden die in de memory staan geldig zijn. 
+In het top level wordt daarna een audio loopback gemaakt. De data wordt ook doorgegeven aan een FIFO memory, zodat deze uitgelezen kan worden door de FFT controller. Het geheugen is 2048 waarden groot, dus wanneer deze vol is wordt een flag hoog gezet zodat de FFT controller weet dat alle waarden die in de memory staan geldig zijn. Het adres waarop de data geschreven moet worden in de FIFO wordt gegenereerd door middel van een counter tussen 0 en 2048. 
 
 \subsection{Fourier nemen}
 % SEBA
