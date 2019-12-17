@@ -87,6 +87,7 @@ Daarna moet het spectrum bepaald kunnen worden. Er worden een aantal samples gen
 Ten laatste moet de verzamelde data na de FFT op een 2D map komen die het spectrogram voorsteld. Eens het volledige scherm gevuld is, moet de oudste meting verwijderd worden en schuift het spectrogram een tijdseenheid op via een FIFO. \\
 
 In het volledige systeem moet rekening gehouden worden met de timing en mogelijke asynchrone signalen. \\
+
 Er zal tijdens de evaluatie van het project met verschillende testsignalen gecontroleerd worden als het project juist ontworpen is. Voorbeelden van testsignalen zijn FM modulatie, frequentie sweep, blokgolf, DTMF signalen, ... \\
 \\ Er zijn enkele minimum vereisten in dit project:
 \begin{itemize}
@@ -193,16 +194,19 @@ In figuur \ref{fig:spectrogram_chirp} staat het scherm wanneer een chirp signaal
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\linewidth]{Spectrogram_leeg.jpg}
-	\caption{Spectrogram}
-	\label{fig:spectrogram_leeg}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.7\linewidth]{Spectrogram_chirp.jpg}
-	\caption{Spectrogram met chirp signaal}
-	\label{fig:spectrogram_chirp}
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\includegraphics[width=0.9\linewidth]{Spectrogram_leeg.jpg}
+		\caption{Spectrogram}
+		\label{fig:spectrogram_leeg}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\includegraphics[width=0.9\linewidth]{Spectrogram_chirp.jpg}
+		\caption{Spectrogram met chirp signaal}
+		\label{fig:spectrogram_chirp}
+	\end{subfigure}
+	
 \end{figure}
 
 \end{document}
