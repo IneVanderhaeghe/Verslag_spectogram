@@ -183,8 +183,26 @@ In het top level wordt daarna een audio loopback gemaakt. De data wordt ook door
 % ROBIN
 
 \section{Besluit}
-% INE
 
-Afsluitende tekst.
+Het is ons gelukt om een spectrogram op een extern scherm af te beelden die real-time de data verwerkt. Alle minimum vereisten zijn voldaan. We hebben gekozen om met een Zedboard te werken en om het scherm aan te sturen via VGA. Er is een interface met de audiocodec chip en de FFT wordt berekend op real-time waarden.\\
+
+Er zijn ook enkele uitbreidingen die we hebben kunnen implementeren: het spectrogram is 3D (de amplitude van de data wordt aangegeven met kleuren) en er is een audio loopback geïmplementeerd. De audio wordt als stereo binnengelezen, maar als mono signaal doorgegeven aan de FFT controller. Dit project zou dus nog kunnen uitgebreid worden door er een stereo spectrogram van te maken. Verder zou de FFT ook kunnen berekend worden op overlappende tijdssignalen en het scherm zou kunnen uitgebreid worden naar full HD.\\
+
+In figuur \ref{fig:spectrogram_leeg} staat het scherm van het spectrogram die wij gemaakt hebben wanneer er geen geluid aan de audiocodec gegeven wordt. \\
+In figuur \ref{fig:spectrogram_chirp} staat het scherm wanneer een chirp signaal aan de audiocodec aangeboden wordt.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{Spectrogram_leeg.jpg}
+	\caption{Spectrogram}
+	\label{fig:spectrogram_leeg}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{Spectrogram_chirp.jpg}
+	\caption{Spectrogram met chirp signaal}
+	\label{fig:spectrogram_chirp}
+\end{figure}
 
 \end{document}
